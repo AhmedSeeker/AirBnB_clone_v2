@@ -141,12 +141,6 @@ class HBNBCommand(cmd.Cmd):
                     kwargs[key] = value
             except Exception:
                 pass
-        from datetime import datetime
-        kwargs['created_at'] = datetime.now().isoformat()
-        kwargs['updated_at'] = datetime.now().isoformat()
-        kwargs['__class__'] = HBNBCommand.classes[args[0]]
-        import uuid
-        kwargs['id'] = str(uuid.uuid4())
         new_instance = HBNBCommand.classes[args[0]](**kwargs)
         storage.save()
         print(new_instance.id)
@@ -344,6 +338,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

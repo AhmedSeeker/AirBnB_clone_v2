@@ -45,6 +45,15 @@ class Place(BaseModel, Base):
                     reviews.append(review)
             return reviews
 
+        @property
+        def amenities(self):
+            """Return all amenities related to the current place"""
+            amenities = []
+            for amenity in storage.all(Amenity):
+                if amenity.place_id in self.amenity_ids:
+                    amenities.append(amenity)
+            return amenities
+
         @amenities.setter
         def amenities(self, amenity):
             """Add an amenity to the current place"""

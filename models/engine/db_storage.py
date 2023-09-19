@@ -1,13 +1,6 @@
 #!/usr/bin/python3
 """Module for objects storage in a database"""
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
 from models.base_model import Base
 import os
 
@@ -59,6 +52,13 @@ class DBStorage:
 
     def reload(self):
         """Create all tables in the database and a session for it"""
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+        from sqlalchemy.orm import sessionmaker, scoped_session
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(Session)

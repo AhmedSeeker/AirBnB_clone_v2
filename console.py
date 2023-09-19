@@ -3,13 +3,13 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -132,13 +132,10 @@ class HBNBCommand(cmd.Cmd):
                     raise Exception
                 value = arg[1]
                 value = value.strip('"')
-                value = value.replace('"', '\"')
-                value = value.replace("_", " ")
+                value = value.translate({34: '\"', 95: ' '})
                 if key in HBNBCommand.types:
                     value = HBNBCommand.types[key](value)
-                    kwargs[key] = value
-                else:
-                    kwargs[key] = value
+                kwargs[key] = value
             except Exception:
                 pass
         new_instance = HBNBCommand.classes[args[0]](**kwargs)
@@ -225,12 +222,10 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage.all(eval(args)).items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
         else:
-            for k, v in storage.all().items():
-                print_list.append(str(v))
+            args = None
+        for k, v in storage.all(eval(args)).items():
+            print_list.append(str(v))
 
         print(print_list)
 

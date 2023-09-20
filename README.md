@@ -101,7 +101,7 @@ Usage: destroy <class_name> <_id>
 (hbnb)   
 ```
 ###### Example 3: Update an object
-Usage: update <class_name> <_id>
+Usage: update <class_name> <_id> .
 ```
 (hbnb) update BaseModel b405fc64-9724-498f-b405-e4071c3d857f first_name "person"
 (hbnb) show BaseModel b405fc64-9724-498f-b405-e4071c3d857f

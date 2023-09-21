@@ -1,13 +1,15 @@
 # ALX AFRICA SE PROGRAM:
 
-<center> <h1>AirBnB clone - MySQL</h1> </center>
+<h1>AirBnB clone - MySQL</h1>
 <sup>``Group project`` ``Python`` ``OOP`` ``Back-end`` ``SQL`` ``MySQL`` ``ORM`` ``SQLAlchemy``</sup>
 
 This repository contains the initial stage of a student project to build a clone of the AirBnB website. This stage implements a backend interface, or console, to manage program data. Console commands allow the user to create, update, and destroy objects, as well as manage file storage and database storage. Using a system of JSON serialization/deserialization, storage is persistent between sessions.
 
 ---
-## Team: Ikbal Eddiani & Ahmed Rifki
-<center><h3>Repository Contents by Project Task</h3> </center>
+## Team:
+> - Ikbal Eddiani
+> - Ahmed Rifki
+<h3>Repository Contents by Project Task</h3>
 
 | Tasks | Files | Description |
 | ----- | ----- | ------ |

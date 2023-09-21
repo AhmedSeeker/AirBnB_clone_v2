@@ -2,6 +2,7 @@
 """ Module for testing file storage"""
 import unittest
 from models import storage
+from models.engine.db_storage import DBStorage
 import os
 
 

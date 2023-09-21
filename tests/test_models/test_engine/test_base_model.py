@@ -37,7 +37,7 @@ class test_DBStorage(unittest.TestCase):
         new = BaseModel()
         for obj in storage.all().values():
             temp = obj
-            self.assertTrue(temp is obj)
+            self.assertNotTrue(temp is not obj)
 
     def test_all(self):
         """ __objects is properly returned """

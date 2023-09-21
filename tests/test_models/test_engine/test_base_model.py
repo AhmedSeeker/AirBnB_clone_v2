@@ -104,6 +104,6 @@ class test_DBStorage(unittest.TestCase):
 
     def test_storage_var_created(self):
         """ FileStorage object storage created """
-        from models.engine.file_storage import FileStorage
+        from models.engine.db_storage import DBStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)

@@ -16,6 +16,10 @@ class test_DBStorage(unittest.TestCase):
             del_list.append(key)
         for key in del_list:
             del storage.all()[key]
+        try:
+            os.remove('file.json')
+        except:
+            pass
 
     def tearDown(self):
         """ Remove storage file at end of tests """

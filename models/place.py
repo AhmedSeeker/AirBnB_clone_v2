@@ -50,7 +50,7 @@ class Place(BaseModel, Base):
             """Return all amenities related to the current place"""
             amenities = []
             for amenity in storage.all(Amenity):
-                if amenity.place_id in self.amenity_ids:
+                if amenity.ids in self.amenity_ids:
                     amenities.append(amenity)
             return amenities
 

@@ -11,7 +11,7 @@ env.user = "ubuntu"
 
 def do_deploy(archive_path):
     """Distribute an archive to web servers"""
-    if not path.isfile((archive_path):
+    if not path.isfile(archive_path):
         return False
     file = archive_path.split("/")[-1]
     filename = file.split(".")[0]

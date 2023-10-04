@@ -5,6 +5,7 @@
 from fabric.api import put, run, env, local
 from datetime import datetime
 from os import path
+env.hosts = ['100.25.34.143', '54.85.11.239']
 
 
 def do_pack():
@@ -24,11 +25,11 @@ def do_pack():
         return None
 
 
+
+
 def do_deploy(archive_path):
     """Distribute an archive to web servers"""
-
     if path.isfile(archive_path):
-        env.hosts = ['100.25.34.143', '54.85.11.239']
         file = archive_path.split("/")[-1]
         filename = file.split(".")[0]
         put(archive_path, f"/tmp/")

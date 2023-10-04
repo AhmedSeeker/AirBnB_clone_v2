@@ -24,4 +24,5 @@ def do_deploy(archive_path):
     run(f"rm -rf {folder}/{filename}/web_static")
     run(f"rm -rf /data/web_static/current")
     run(f"ln -s {folder}/{filename}/ /data/web_static/current")
-    return True if deploy.succeeded else False
+    print("New version deployed!")
+    return True

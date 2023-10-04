@@ -12,7 +12,7 @@ def do_deploy(archive_path):
         env.hosts = ['100.25.34.143', '54.85.11.239']
         file = archive_path.split("/")[-1]
         filename = file.split(".")[0]
-        put(archive_path, f"/tmp/{file}")
+        put(archive_path, f"/tmp/")
         folder = "/data/web_static/releases"
         run(f"mkdir -p {folder}/{filename}/")
         run(f"tar -xzf /tmp/{file} -C {folder}/{filename}/")

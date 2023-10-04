@@ -1,9 +1,28 @@
 #!/usr/bin/python3
-""" Fabric script (based on the file 1-pack_web_static.py)
-    that distributes an archive to web servers"""
-
-from fabric.api import put, run, env
+""" Fabric script that generates a .tgz archive from the contents
+    of the web_static folder of my AirBnB Clone repo
+"""
+from fabric.api import put, run, env, local
+from datetime import datetime
 from os.path import exists
+
+
+def do_pack():
+    """ Generate a .tgz archive from the contents of the web_static folder """
+
+    """folder to store all archives"""
+    local("mkdir -p versions")
+
+    """archive name: web_static_<year><month><day><hour><minute><second>.tgz"""
+    now = datetime.now()
+    timestamp = now.strftime("%Y%m%d%H%M%S")
+    archive = f"versions/web_static_{timestamp}.tgz"
+    try:
+        local(f"tar -cvzf {archive} web_static")
+        return archive
+    except Exception:
+        return None
+
 
 env.hosts = ['100.25.34.143', '54.85.11.239']
 env.user = "ubuntu"

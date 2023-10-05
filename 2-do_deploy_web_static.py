@@ -27,7 +27,8 @@ def do_pack():
 
 def do_deploy(archive_path):
     """Distribute an archive to web servers"""
-    if path.isfile(archive_path):
+    
+    if path.exists(archive_path):
         file = archive_path.split("/")[-1]
         filename = file.split(".")[0]
         if put(archive_path, f"/tmp/").failed:
@@ -37,7 +38,7 @@ def do_deploy(archive_path):
             return False
         if run(f"tar -xzf /tmp/{file} -C {folder}/{filename}/").failed:
             return False
-        if run(f"rm /tmp/{file}").failed:
+        if run(f"rm /tmp/{archive_path}").failed:
             return False
         if run(f"mv {folder}/{filename}/web_static/* \
                 {folder}/{filename}/").failed:

@@ -30,15 +30,24 @@ def do_deploy(archive_path):
     if path.isfile(archive_path):
         file = archive_path.split("/")[-1]
         filename = file.split(".")[0]
-        put(archive_path, f"/tmp/")
+        if put(archive_path, f"/tmp/").failed:
+            return False
         folder = "/data/web_static/releases"
-        run(f"mkdir -p {folder}/{filename}/")
-        run(f"tar -xzf /tmp/{file} -C {folder}/{filename}/")
-        run(f"rm /tmp/{file}")
-        run(f"mv {folder}/{filename}/web_static/* {folder}/{filename}/")
-        run(f"rm -rf {folder}/{filename}/web_static")
-        run(f"rm -rf /data/web_static/current")
-        run(f"ln -s {folder}/{filename}/ /data/web_static/current")
+        if run(f"mkdir -p {folder}/{filename}/").failed:
+            return False
+        if run(f"tar -xzf /tmp/{file} -C {folder}/{filename}/").failed:
+            return False
+        if run(f"rm /tmp/{file}").failed:
+            return False
+        if run(f"mv {folder}/{filename}/web_static/* \
+                {folder}/{filename}/").failed:
+            return False
+        if run(f"rm -rf {folder}/{filename}/web_static").failed:
+            return False
+        if run(f"rm -rf /data/web_static/current").failed:
+            return False
+        if run(f"ln -s {folder}/{filename}/ /data/web_static/current").failed:
+            return False
         print("New version deployed!")
         return True
     else:

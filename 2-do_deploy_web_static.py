@@ -2,7 +2,7 @@
 """ Fabric script that generates a .tgz archive from the contents
     of the web_static folder of my AirBnB Clone repo
 """
-from fabric.api import put, run, env, local
+from fabric.api import put, run, env, local, task
 from datetime import datetime
 from os import path
 from shlex import quote
@@ -11,6 +11,7 @@ env.user = "ubuntu"
 env.key_filename = "~/.ssh/school"
 
 
+@task
 def do_pack():
     """ Generate a .tgz archive from the contents of the web_static folder """
 
@@ -28,6 +29,7 @@ def do_pack():
         return None
 
 
+@task
 def do_deploy(archive_path):
     """Distribute an archive to web servers"""
 
@@ -36,14 +38,15 @@ def do_deploy(archive_path):
         filename = file.split(".")[0]
         if put(archive_path, '/tmp/{}'.format(quote(file))).failed:
             return False
-        folder = '/data/web_static/releases/{}'.format(quote(filename))
-        run('mkdir -p {}/'.format(quote(folder)))
-        run("tar -xzf /tmp/{} -C {}/".format(quote(file), quote(folder)))
-        run('rm /tmp/{}'.format(quote(file)))
-        run('mv {}/web_static/* {}/'.format(quote(folder), quote(folder)))
-        run('rm -rf {}/web_static'.format(quote(folder)))
-        run('rm -rf /data/web_static/current')
-        run('ln -s {}/ /data/web_static/current'.format(quote(folder)))
+        folder = "/data/web_static/releases/{}".format(filename)
+        run("rm -rf {}/".format(folder))
+        run("mkdir -p {}/".format(folder))
+        run("tar -xzf /tmp/{} -C {}/".format(file, folder))
+        run("rm /tmp/{}".format(quote(file)))
+        run("mv {}/web_static/* {}/".format(folder, folder))
+        run("rm -rf {}/web_static".format(folder))
+        run("rm -rf /data/web_static/current")
+        run("ln -s {}/ /data/web_static/current".format(folder))
         print("New version deployed!")
         return True
     else:

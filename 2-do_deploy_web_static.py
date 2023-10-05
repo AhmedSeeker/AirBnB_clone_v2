@@ -36,7 +36,7 @@ def do_deploy(archive_path):
     if path.exists(archive_path):
         file = archive_path.split("/")[1]
         filename = file.split(".")[0]
-        if put(archive_path, '/tmp/{}'.format(quote(file))).failed:
+        if put(archive_path, "/tmp/").failed:
             return False
         folder = "/data/web_static/releases/{}".format(filename)
         run("rm -rf {}/".format(folder))

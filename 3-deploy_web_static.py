@@ -2,13 +2,14 @@
 """ Fabric script that generates a .tgz archive from the contents
     of the web_static folder of my AirBnB Clone repo
 """
-from fabric.api import put, run, env, local
+from fabric.api import put, run, env, local, task, runs_once
 from datetime import datetime
 from os import path
 from shlex import quote
 env.hosts = ['100.25.34.143', '54.85.11.239']
 
 
+@runs_once
 def do_pack():
     """ Generate a .tgz archive from the contents of the web_static folder """
 
@@ -26,6 +27,7 @@ def do_pack():
         return None
 
 
+@task
 def do_deploy(archive_path):
     """Distribute an archive to web servers"""
     if path.exists(archive_path):
@@ -34,6 +36,7 @@ def do_deploy(archive_path):
         if put(archive_path, '/tmp/{}'.format(quote(file))).failed:
             return False
         folder = '/data/web_static/releases/{}'.format(quote(filename))
+        run("rm -rf {}/".format(folder))
         run('mkdir -p {}/'.format(quote(folder)))
         run("tar -xzf /tmp/{} -C {}/".format(quote(file), quote(folder)))
         run('rm /tmp/{}'.format(quote(file)))
@@ -47,6 +50,7 @@ def do_deploy(archive_path):
         return False
 
 
+@task
 def deploy():
     """Fabric script that creates and distributes an archive to web servers"""
 

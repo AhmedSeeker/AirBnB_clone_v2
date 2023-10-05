@@ -2,7 +2,7 @@
 """ Fabric script that generates a .tgz archive from the contents
     of the web_static folder of my AirBnB Clone repo
 """
-from fabric.api import put, run, env, local, lcd, cd
+from fabric.api import put, run, env, local
 from datetime import datetime
 from os import path
 from shlex import quote
@@ -58,7 +58,6 @@ def deploy():
 
 def do_clean(number=0):
     """Fabric script that deletes out-of-date archives"""
-
     try:
         number = int(number)
     except TypeError:
@@ -66,7 +65,7 @@ def do_clean(number=0):
     number = 2 if number <= 1 else number + 1
     command = " | ".join([
         "ls -t {}",
-        "grep {}".format("web_static_*"),
+        "grep -E '.*web_static_.*\.tgz'",
         "tail -n +{}",
         "xargs -I {{}} rm -rf {}/{{}}"])
 

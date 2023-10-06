@@ -1,13 +1,14 @@
 #Redo task 0 by using Puppet
 
 exec {'directories':
-  command  => 'mkdir -p /data/web_static/releases/test/; mkdir -p /data/web_static/shared/',
+  command  => 'sudo mkdir -p /data/web_static/releases/test/; sudo mkdir -p /data/web_static/shared/',
   provider => shell,
 }
 
-file {'/data/web_static/releases/test/index.html':
+-> file {'/data/web_static/releases/test/index.html':
   ensure  => file,
   content => "<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>\n",
+  require => Exec['directories'],
 }
 
 file {'/data/web_static/current':
@@ -17,22 +18,24 @@ file {'/data/web_static/current':
 }
 
 exec {'ubuntu':
-  command  => 'chown -R ubuntu:ubuntu /data/',
+  command  => 'sudo chown -R ubuntu:ubuntu /data/',
   provider => shell,
   require  => Exec['directories'],
 }
 
-exec {'apt-get update':
+exec {'sudo apt-get update':
   provider => shell,
   notify   => Package['nginx'],
 }
 
 package {'nginx':
-  ensure   => present,
+  ensure   => installed,
   provider => apt,
+  require  => Exec['sudo apt-get update'],
 }
 
 file_line {'hbnb_static':
+  ensure  => present,
   line    => "\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}",
   after   => '^\troot /var/www/html;',
   path    => '/etc/nginx/sites-available/default',
@@ -41,5 +44,5 @@ file_line {'hbnb_static':
 }
 
 service {'nginx':
-  ensure => running
+  ensure => running,
 }

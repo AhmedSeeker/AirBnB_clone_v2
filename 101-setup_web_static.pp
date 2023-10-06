@@ -1,53 +1,45 @@
-#using Puppet
+#Redo task 0 by using Puppet
 
-exec {'apt_update':
-  command  => 'sudo apt update',
+exec {'directories':
+  command  => 'mkdir -p /data/web_static/releases/test/; mkdir -p /data/web_static/shared/',
   provider => shell,
 }
 
--> package {'nginx':
-  ensure   => installed,
-  provider => apt,
-  require  => Exec['apt_update'],
-}
-
--> exec {'data':
-  command  => 'sudo mkdir -p /data/web_static/releases/test/; mkdir -p /data/web_static/shared/',
-  provider => shell,
-}
-
--> file {'/data/web_static/releases/test/index.html':
+file {'/data/web_static/releases/test/index.html':
   ensure  => file,
-  require => Exec['data'],
-  content =>"<html>
-  <head>
-  </head>
-  <body>
-    Holberton School
-  </body>
-</html>
-",
+  content => "<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>\n",
 }
 
--> exec {'link':
-  command  => 'sudo ln -sf /data/web_static/releases/test /data/web_static/current',
-  provider => shell,
+file {'/data/web_static/current':
+  ensure  => link,
+  target  => '/data/web_static/releases/test',
+  require => Exec['directories'],
 }
 
--> exec {'mode':
+exec {'ubuntu':
   command  => 'chown -R ubuntu:ubuntu /data/',
   provider => shell,
+  require  => Exec['directories'],
 }
 
--> exec {'header':
-  command  => "sudo sed -i '\\%^\\tlocation / %i\\\\tlocation /hbnb_static/ {alias /data/web_static/current/;}\\n'\
- /etc/nginx/sites-available/default",
+exec {'apt-get update':
   provider => shell,
-  require  => Package['nginx'],
+  notify   => Package['nginx'],
 }
 
--> exec {'restart':
-  command  => 'sudo service nginx restart',
-  provider => shell,
-  require  => Exec['header'],
+package {'nginx':
+  ensure   => present,
+  provider => apt,
+}
+
+file_line {'hbnb_static':
+  line    => "\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}",
+  after   => '^\troot /var/www/html;',
+  path    => '/etc/nginx/sites-available/default',
+  require => Package['nginx'],
+  notify  => Service['nginx'],
+}
+
+service {'nginx':
+  ensure => running
 }

@@ -5,46 +5,49 @@ exec {'apt_update':
   provider => shell,
 }
 
-package {'nginx':
+-> package {'nginx':
   ensure   => installed,
   provider => apt,
   require  => Exec['apt_update'],
 }
 
-exec {'data':
+-> exec {'data':
   command  => 'sudo mkdir -p /data/web_static/releases/test/; mkdir -p /data/web_static/shared/',
   provider => shell,
 }
 
-file {'index html':
+-> file {'/data/web_static/releases/test/index.html':
   ensure  => file,
-  path    => '/data/web_static/releases/test/index.html',
   require => Exec['data'],
-  content => "<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>\n",
+  content =>"<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
+",
 }
 
-file {'symbol link':
-  ensure  => link,
-  path    => '/data/web_static/current',
-  target  => '/data/web_static/releases/test',
-  require => File['index html'],
-}
-
-exec {'mode':
-  command  => 'sudo chown -R ubuntu:ubuntu /data/',
+-> exec {'link':
+  command  => 'sudo ln -sf /data/web_static/releases/test /data/web_static/current',
   provider => shell,
-  require  => File['symbol link'],
 }
 
-file_line {'default':
-  ensure  => present,
-  path    => '/etc/nginx/sites-available/default',
-  line    => "\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}",
-  after   => '^\troot /var/www/html;',
-  require => Package['nginx'],
-  notify  => Service['nginx'],
+-> exec {'mode':
+  command  => 'chown -R ubuntu:ubuntu /data/',
+  provider => shell,
 }
 
-service {'nginx':
-  ensure => running
+-> exec {'header':
+  command  => "sudo sed -i '\\%^\\tlocation / %i\\\\tlocation /hbnb_static/ {alias /data/web_static/current/;}\\n'\
+ /etc/nginx/sites-available/default",
+  provider => shell,
+  require  => Package['nginx'],
+}
+
+-> exec {'restart':
+  command  => 'sudo service nginx restart',
+  provider => shell,
+  require  => Exec['header'],
 }

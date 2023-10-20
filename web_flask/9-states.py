@@ -10,25 +10,21 @@ app = Flask(__name__)
 
 
 @app.route('/states', strict_slashes=False)
-def states():
-    """Return list of states"""
-    states = storage.all(State).values()
-    return render_template("7-states_list.html", states=states)
-
-
 @app.route('/states/<id>', strict_slashes=False)
-def state_id(id):
+def state(id=None):
     """Return the state with the id passed as arg and their related cities"""
     states = storage.all(State).values()
-    if id in states:
+    if id:
         for state in states:
             if state.id == id:
                 return render_template(
                         "9-states.html",
                         state=state,
+                        id=id,
                         storage_type=getenv("HBNB_TYPE_STORAGE"))
+        return render_template("9-states.html", state=None, id=id)
     else:
-        return render_template("9-states.html")
+        return render_template("9-states.html", states=states)
 
 
 @app.teardown_appcontext

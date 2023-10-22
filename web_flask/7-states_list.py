@@ -17,6 +17,7 @@ def states():
 
 @app.teardown_appcontext
 def teardown(_):
+    """Remove the current SQLAlchemy Session after each request"""
     storage.close()
 
 

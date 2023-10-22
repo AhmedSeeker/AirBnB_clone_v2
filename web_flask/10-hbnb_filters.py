@@ -5,25 +5,22 @@ from models.state import State
 from models.amenity import Amenity
 from flask import Flask
 from flask import render_template
-from os import getenv
 
 app = Flask(__name__)
 
 
 @app.route('/hbnb_filters', strict_slashes=False)
-def state():
-    """Return the state with the id passed as arg and their related cities"""
+def hbnb_filters():
+    """Return list of states with related cities and a list of amenities"""
     states = storage.all(State).values()
     amenities = storage.all(Amenity).values()
     return render_template(
-            "10-hbnb_filters.html",
-            states=states,
-            amenities=amenities,
-            storage_type=getenv("HBNB_TYPE_STORAGE"))
+            "10-hbnb_filters.html", states=states, amenities=amenities)
 
 
 @app.teardown_appcontext
 def teardown(_):
+    """Remove the current SQLAlchemy Session after each request"""
     storage.close()
 
 

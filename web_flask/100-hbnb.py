@@ -7,14 +7,13 @@ from models.place import Place
 from models.user import User
 from flask import Flask
 from flask import render_template
-from os import getenv
 
 app = Flask(__name__)
 
 
 @app.route('/hbnb', strict_slashes=False)
-def state():
-    """Return a template with the listes of states and amenities places"""
+def hbnb():
+    """Return a template that displays list of states, amenities and places"""
     states = storage.all(State).values()
     amenities = storage.all(Amenity).values()
     places = storage.all(Place).values()
@@ -23,15 +22,13 @@ def state():
             place.id: users["User.{}".format(place.user_id)]
             for place in places}
     return render_template(
-            '100-hbnb.html',
-            states=states,
-            amenities=amenities,
-            owners=owners,
+            '100-hbnb.html', states=states, amenities=amenities, owners=owners,
             places=places)
 
 
 @app.teardown_appcontext
 def teardown(_):
+    """Remove the current SQLAlchemy Session after each request"""
     storage.close()
 
 

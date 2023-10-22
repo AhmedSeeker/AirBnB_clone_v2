@@ -10,17 +10,17 @@ app = Flask(__name__)
 
 
 @app.route('/cities_by_states', strict_slashes=False)
-def states():
-    """Return list of states"""
+def cities_by_states():
+    """Return list of states and their related cities"""
     states = storage.all(State).values()
     return render_template(
             "8-cities_by_states.html",
-            states=states,
-            storage_type=getenv("HBNB_TYPE_STORAGE"))
+            states=states)
 
 
 @app.teardown_appcontext
 def teardown(_):
+    """Remove the current SQLAlchemy Session after each request"""
     storage.close()
 
 
